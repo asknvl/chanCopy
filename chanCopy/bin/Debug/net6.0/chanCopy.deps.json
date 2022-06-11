@@ -8,7 +8,7 @@
     ".NETCoreApp,Version=v6.0": {
       "chanCopy/1.0.0": {
         "dependencies": {
-          "WTelegramClient": "0.0.0",
+          "WTelegramClient": "2.4.1",
           "Newtonsoft.Json": "12.0.0.0",
           "Telegram.Bot": "17.0.0.0",
           "Telegram.Bot.Extensions.Polling": "1.0.2.0"
@@ -17,9 +17,12 @@
           "chanCopy.dll": {}
         }
       },
-      "WTelegramClient/0.0.0": {
+      "WTelegramClient/2.4.1": {
         "runtime": {
-          "WTelegramClient.dll": {}
+          "lib/net5.0/WTelegramClient.dll": {
+            "assemblyVersion": "2.4.1.0",
+            "fileVersion": "2.4.1.0"
+          }
         }
       },
       "Newtonsoft.Json/12.0.0.0": {
@@ -54,10 +57,12 @@
       "serviceable": false,
       "sha512": ""
     },
-    "WTelegramClient/0.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
+    "WTelegramClient/2.4.1": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-8lif0nJMvCQ5u9fEl3lqieeP1M4HUpwozOtFS1KkTciO3AjSO+gwV5Nkw37RMnlzEJcnk/ibh+O3+zymfkQ8aQ==",
+      "path": "wtelegramclient/2.4.1",
+      "hashPath": "wtelegramclient.2.4.1.nupkg.sha512"
     },
     "Newtonsoft.Json/12.0.0.0": {
       "type": "reference",
