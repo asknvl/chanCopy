@@ -1,0 +1,54 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+    <LangVersion>latest</LangVersion>
+    <RootNamespace>WTelegram</RootNamespace>
+    <Deterministic>true</Deterministic>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+    <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    <PackageId>WTelegramClient</PackageId>
+    <Version>0.0.0</Version>
+    <Authors>Wizou</Authors>
+    <Description>Telegram Client API library written 100% in C# and .NET Standard | Latest MTProto &amp; Telegram API layer version</Description>
+    <Copyright>Copyright © Olivier Marcoux 2021-2022</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/wiz0u/WTelegramClient</PackageProjectUrl>
+    <PackageIcon>logo.png</PackageIcon>
+    <PublishRepositoryUrl>true</PublishRepositoryUrl>
+    <RepositoryUrl>https://github.com/wiz0u/WTelegramClient.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageTags>Telegram;Client;Api;UserBot;MTProto;TLSharp;OpenTl</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <NoWarn>IDE0079;0419;1573;1591</NoWarn>
+    <DefineConstants>TRACE;</DefineConstants>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove=".gitattributes" />
+    <None Remove=".gitignore" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="..\.github\dev.yml" Link="Data\dev.yml" />
+    <None Include="..\.github\release.yml" Link="Data\release.yml" />
+    <None Include="..\EXAMPLES.md" Link="Data\EXAMPLES.md" />
+    <None Include="..\FAQ.md" Link="Data\FAQ.md" />
+    <None Include="..\README.md" Link="Data\README.md" Pack="true" PackagePath="\" />
+    <None Include="..\logo.png" Link="Data\logo.png" Pack="true" PackagePath="\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+  </ItemGroup>
+  
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="IndexRange" Version="1.0.2" />
+    <PackageReference Include="System.Memory" Version="4.5.5" />
+    <PackageReference Include="System.Text.Json" Version="6.0.4" />
+  </ItemGroup>
+
+</Project>

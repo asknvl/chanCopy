@@ -1,0 +1,81 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v5.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v5.0": {
+      "chanCopy/1.0.0": {
+        "dependencies": {
+          "Newtonsoft.Json": "12.0.0.0",
+          "Telegram.Bot": "17.0.0.0",
+          "Telegram.Bot.Extensions.Polling": "1.0.2.0",
+          "WTelegramClient": "2.4.1.0"
+        },
+        "runtime": {
+          "chanCopy.dll": {}
+        }
+      },
+      "Newtonsoft.Json/12.0.0.0": {
+        "runtime": {
+          "Newtonsoft.Json.dll": {
+            "assemblyVersion": "12.0.0.0",
+            "fileVersion": "12.0.2.23222"
+          }
+        }
+      },
+      "Telegram.Bot/17.0.0.0": {
+        "runtime": {
+          "Telegram.Bot.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.0.0.0"
+          }
+        }
+      },
+      "Telegram.Bot.Extensions.Polling/1.0.2.0": {
+        "runtime": {
+          "Telegram.Bot.Extensions.Polling.dll": {
+            "assemblyVersion": "1.0.2.0",
+            "fileVersion": "1.0.2.0"
+          }
+        }
+      },
+      "WTelegramClient/2.4.1.0": {
+        "runtime": {
+          "WTelegramClient.dll": {
+            "assemblyVersion": "2.4.1.0",
+            "fileVersion": "2.4.1.0"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "chanCopy/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Newtonsoft.Json/12.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Telegram.Bot/17.0.0.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "Telegram.Bot.Extensions.Polling/1.0.2.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "WTelegramClient/2.4.1.0": {
+      "type": "reference",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

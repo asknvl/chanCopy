@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\WTelegramClient-master\src\WTelegramClient.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>lib\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Telegram.Bot">
+      <HintPath>lib\Telegram.Bot.dll</HintPath>
+    </Reference>
+    <Reference Include="Telegram.Bot.Extensions.Polling">
+      <HintPath>lib\Telegram.Bot.Extensions.Polling.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
