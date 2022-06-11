@@ -71,27 +71,7 @@ namespace chanCopy
             return Task.CompletedTask;
         }
 
-        #region public
-        public async void PostButton(string channelName, string text, string url, CancellationToken cts)
-        {
-            InlineKeyboardMarkup inlineKeyboard = new(new[]
-                {
-                    InlineKeyboardButton.WithUrl(
-                        text: text,
-                        url: url
-                    )
-                }
-            );
-
-            Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
-                chatId: channelName,
-                text: "хер куда уберешь этот текст",
-                replyMarkup: inlineKeyboard,
-                cancellationToken: cts);
-
-
-        }
-
+        #region public      
         public async void PostMedia(string channelName, string inlineText, string inlineUrl, byte[] mediaBytes, CancellationToken cts)
         {
             InlineKeyboardMarkup inlineKeyboard = new(new[]
@@ -124,29 +104,24 @@ namespace chanCopy
             var u = "\"" + webPage + "\"";           
             var t = "<a href=" + u + ">&#8288;</a>" + message;
 
+            Telegram.Bot.Types.MessageEntity e = new Telegram.Bot.Types.MessageEntity();
+            e.Offset = 50;
+            e.Type = MessageEntityType.Bold;
+            e.Length = 50;
+            
+
+
             Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
             chatId: channelName,            
             text: t,
             replyMarkup: inlineKeyboard,
-            //entities: new[] {                
-            //    new Telegram.Bot.Types.MessageEntity() { Type = MessageEntityType.Bold, Length = 70, Offset = 0 }
-            //},
+            entities: new[] {
+                e
+            },
             
-            parseMode: ParseMode.Html,
+            parseMode: ParseMode.Markdown,
             cancellationToken: cts);
-
         }
-
-        //public async void PostMediaPoll(string question)
-        //{
-        //    Telegram.Bot.Types.Message sentMessage = await botClient.SendPollAsync(
-        //    chatId: channelName,
-        //    question: question,
-            
-            
-        //}
-
-        //public async void PostMessage(string channelName, string video, )
         #endregion
     }
 
@@ -154,31 +129,43 @@ namespace chanCopy
     {
         static string Config(string what)
         {
+            switch (what)
+            {
+                case "api_id": return "13180345";
+                case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
+                case "phone_number": return "+79256186936";
+                case "verification_code": return "38615"; /*Console.Write("Code: "); return Console.ReadLine();*/
+                case "first_name": return "Alexey";      // if sign-up is required
+                //case "last_name": return "Doe";        // if sign-up is required
+                //case "password": return "secret!";     // if user has enabled 2FA
+                default: return null;                  // let WTelegramClient decide the default config
+            }
+
             //switch (what)
             //{
-            //    case "api_id": return "13180345";
-            //    case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
-            //    case "phone_number": return "+79256186936";
-            //    /*case "verification_code": return "55600";*/ /*Console.Write("Code: "); return Console.ReadLine();*/
-            //    case "first_name": return "John";      // if sign-up is required
-            //    case "last_name": return "Doe";        // if sign-up is required
+            //    case "api_id": return "15092071";
+            //    case "api_hash": return "49cb5f96f44c30729ae7caeb93dea54d";
+            //    case "phone_number": return "+79267481530";
+            //    case "verification_code": return "79559"; /*Console.Write("Code: "); return Console.ReadLine();*/
+            //    case "first_name": return "dnklknvl";      // if sign-up is required
+            //    case "last_name": return "";        // if sign-up is required
             //    case "password": return "secret!";     // if user has enabled 2FA
             //    default: return null;                  // let WTelegramClient decide the default config
             //}
 
 #if DEBUG
 
-            switch (what)
-            {
-                case "api_id": return "10007326";
-                case "api_hash": return "5dd41a6fe9bf34ee8e7782eaf27e5f6f";
-                case "phone_number": return "+84568357459";
-                case "verification_code": return "78337"; /*Console.Write("Code: "); return Console.ReadLine();*/
-                case "first_name": return "John";      // if sign-up is required
-                case "last_name": return "Doe";        // if sign-up is required
-                case "password": return "secret!";     // if user has enabled 2FA
-                default: return null;                  // let WTelegramClient decide the default config
-            }
+            //switch (what)
+            //{
+            //    case "api_id": return "10007326";
+            //    case "api_hash": return "5dd41a6fe9bf34ee8e7782eaf27e5f6f";
+            //    case "phone_number": return "+84568357459";
+            //    case "verification_code": return "78337"; /*Console.Write("Code: "); return Console.ReadLine();*/
+            //    case "first_name": return "John";      // if sign-up is required
+            //    case "last_name": return "Doe";        // if sign-up is required
+            //    case "password": return "secret!";     // if user has enabled 2FA
+            //    default: return null;                  // let WTelegramClient decide the default config
+            //}
 #else
 #endif
 
@@ -212,13 +199,15 @@ namespace chanCopy
 
         public async void start()
         {
+            Console.WriteLine("chanCopy 0.1");
+
             try
             {
                 client = new WTelegram.Client(Config);
                 var user = await client.LoginUserIfNeeded();
                 dialogs = await client.Messages_GetAllDialogs();
                 chats = await client.Messages_GetAllChats();
-
+                
                 foreach (var item in chats.chats)
                 {
                     Console.WriteLine($"{item.Key} : {item.Value}");
@@ -285,6 +274,11 @@ namespace chanCopy
 
                     if (m.Peer.ID.Equals(outputChannelID))
                         return;
+
+                    if (!m.Peer.ID.Equals(1443613753))
+                        return;
+                    
+
                     var target = chats.chats[outputChannelID];
 
                     Random r = new Random();

@@ -2,28 +2,39 @@
   "version": 3,
   "targets": {
     "net6.0": {
-      "WTelegramClient/0.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v6.0",
+      "WTelegramClient/2.4.1": {
+        "type": "package",
         "compile": {
-          "bin/placeholder/WTelegramClient.dll": {}
+          "lib/net5.0/WTelegramClient.dll": {}
         },
         "runtime": {
-          "bin/placeholder/WTelegramClient.dll": {}
+          "lib/net5.0/WTelegramClient.dll": {}
         }
       }
     }
   },
   "libraries": {
-    "WTelegramClient/0.0.0": {
-      "type": "project",
-      "path": "../WTelegramClient-master/src/WTelegramClient.csproj",
-      "msbuildProject": "../WTelegramClient-master/src/WTelegramClient.csproj"
+    "WTelegramClient/2.4.1": {
+      "sha512": "8lif0nJMvCQ5u9fEl3lqieeP1M4HUpwozOtFS1KkTciO3AjSO+gwV5Nkw37RMnlzEJcnk/ibh+O3+zymfkQ8aQ==",
+      "type": "package",
+      "path": "wtelegramclient/2.4.1",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "README.md",
+        "lib/net5.0/WTelegramClient.dll",
+        "lib/net5.0/WTelegramClient.xml",
+        "lib/netstandard2.0/WTelegramClient.dll",
+        "lib/netstandard2.0/WTelegramClient.xml",
+        "logo.png",
+        "wtelegramclient.2.4.1.nupkg.sha512",
+        "wtelegramclient.nuspec"
+      ]
     }
   },
   "projectFileDependencyGroups": {
     "net6.0": [
-      "WTelegramClient >= 0.0.0"
+      "WTelegramClient >= 2.4.1"
     ]
   },
   "packageFolders": {
@@ -52,11 +63,7 @@
       "frameworks": {
         "net6.0": {
           "targetAlias": "net6.0",
-          "projectReferences": {
-            "D:\\WORK\\xtime\\Sources\\chanCopy\\WTelegramClient-master\\src\\WTelegramClient.csproj": {
-              "projectPath": "D:\\WORK\\xtime\\Sources\\chanCopy\\WTelegramClient-master\\src\\WTelegramClient.csproj"
-            }
-          }
+          "projectReferences": {}
         }
       },
       "warningProperties": {
@@ -68,6 +75,12 @@
     "frameworks": {
       "net6.0": {
         "targetAlias": "net6.0",
+        "dependencies": {
+          "WTelegramClient": {
+            "target": "Package",
+            "version": "[2.4.1, )"
+          }
+        },
         "imports": [
           "net461",
           "net462",

@@ -35,8 +35,6 @@ D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\Newtonsoft.Json.dll
 D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\Telegram.Bot.dll
 D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\Telegram.Bot.Extensions.Polling.dll
 D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\WTelegramClient.dll
-D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\WTelegramClient.pdb
-D:\WORK\xtime\Sources\chanCopy\chanCopy\bin\Debug\net6.0\WTelegramClient.xml
 D:\WORK\xtime\Sources\chanCopy\chanCopy\obj\Debug\net6.0\chanCopy.csproj.CopyComplete
 D:\WORK\xtime\Sources\chanCopy\chanCopy\obj\Debug\net6.0\chanCopy.dll
 D:\WORK\xtime\Sources\chanCopy\chanCopy\obj\Debug\net6.0\refint\chanCopy.dll

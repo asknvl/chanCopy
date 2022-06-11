@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\WTelegramClient-master\src\WTelegramClient.csproj" />
+    <PackageReference Include="WTelegramClient" Version="2.4.1" />
   </ItemGroup>
 
   <ItemGroup>
