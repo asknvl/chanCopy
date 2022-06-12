@@ -90,7 +90,28 @@ namespace chanCopy
 
         }
 
-        public async void PostWebPage(string channelName, string inlineText, string inlineUrl, string message, string webPage, CancellationToken cts)
+
+        void insertTag(string tag, int offset, int length, ref string s, ref int tagLengtCntr)
+        {
+            string startTeg = $"<{tag}>";
+            s = s.Insert(offset + tagLengtCntr, startTeg);
+            tagLengtCntr += startTeg.Length;
+            string stopTeg = $"</{tag}>";
+            s = s.Insert(offset + length + tagLengtCntr, stopTeg);
+            tagLengtCntr += stopTeg.Length;
+        }
+
+        void insertTagUrl(int offset, int length, ref string s, ref int tagLengtCntr, string url)
+        {            
+            string startTeg = $"<a href=\"{url}\">";
+            s = s.Insert(offset + tagLengtCntr, startTeg);            
+            tagLengtCntr += startTeg.Length;
+            string stopTeg = $"</a>";
+            s = s.Insert(offset + length + tagLengtCntr, stopTeg);
+            tagLengtCntr += stopTeg.Length;
+        }
+
+        public async void PostWebPage(string channelName, string inlineText, string inlineUrl, string message, string webPage, MessageEntity[] entities, CancellationToken cts)
         {
             InlineKeyboardMarkup inlineKeyboard = new(new[]
                 {
@@ -101,25 +122,44 @@ namespace chanCopy
                 }
             );
 
-            var u = "\"" + webPage + "\"";           
-            var t = "<a href=" + u + ">&#8288;</a>" + message;
+            var u = "\"" + webPage + "\"";            
+            int tagLenCntr = 0;
 
-            Telegram.Bot.Types.MessageEntity e = new Telegram.Bot.Types.MessageEntity();
-            e.Offset = 50;
-            e.Type = MessageEntityType.Bold;
-            e.Length = 50;
-            
+            foreach (var item in entities)
+            {
+                //if (item is MessageEntityTextUrl)
+                //{
+                //    insertTagUrl(item.offset, item.length, ref message, ref tagLenCntr, ((MessageEntityTextUrl)item).url);
+                //}
 
+                if (item is MessageEntityItalic)
+                {
+                    insertTag("i", item.offset, item.length, ref message, ref tagLenCntr);
+                }
+                if (item is MessageEntityBold)
+                {
+                    insertTag("b", item.offset, item.length, ref message, ref tagLenCntr);
+                }
+
+
+            }
+
+            var t = message + "<a href=" + u + ">&#8288;</a>";            
 
             Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
             chatId: channelName,            
             text: t,
-            replyMarkup: inlineKeyboard,
-            entities: new[] {
-                e
-            },
-            
-            parseMode: ParseMode.Markdown,
+            //entities: new Telegram.Bot.Types.MessageEntity[]
+            //{
+            //    new Telegram.Bot.Types.MessageEntity()
+            //    {
+            //        Type = MessageEntityType.Bold,
+            //        Offset = 2,
+            //        Length = 10
+            //    }
+            //},
+            replyMarkup: inlineKeyboard,            
+            parseMode: ParseMode.Html,            
             cancellationToken: cts);
         }
         #endregion
@@ -184,8 +224,8 @@ namespace chanCopy
         long outputChannelID = 1597383421;
         string outputChannelName = "@mytestlalalalal";
         string outputTargetTgLink = "@daavid_gzlez";
-        string outputTelegramLink = "@ceoxtime";
-        string outputButtonButtonUrl = "http://t.me/ceoxtime";
+        string outputTelegramLink = "@Daavid_Gonzalez";
+        string outputButtonButtonUrl = "http://t.me/Daavid_Gonzalez";
 #else
         //test output channel parameters
         long outputChannelID = 1597383421;
@@ -199,7 +239,7 @@ namespace chanCopy
 
         public async void start()
         {
-            Console.WriteLine("chanCopy 0.1");
+            Console.WriteLine("chanCopy 0.2");
 
             try
             {
@@ -362,7 +402,7 @@ namespace chanCopy
                                 }
                             }
                             if (inlineUrl != "" && inlineText != "") 
-                                bot.PostWebPage(outputChannelName, inlineText, inlineUrl, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), url, new CancellationToken());
+                                bot.PostWebPage(outputChannelName, inlineText, inlineUrl, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), url, m.entities, new CancellationToken());
                         } else                      
                             await client.SendMessageAsync(target, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), null, 0, m.entities, default, true);                         
                         return;
