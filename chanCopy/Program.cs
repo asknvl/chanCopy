@@ -28,7 +28,11 @@ namespace chanCopy
     class Bot
     {
         #region const
-        const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
+        //мой тестовый
+        //const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
+
+        //боевой
+        const string Token = "5597667104:AAGjH9xOyAzTPOLBY98_D88XZaMkOMKGCNg";
         #endregion
 
         #region vars
@@ -122,7 +126,7 @@ namespace chanCopy
                 }
             );
 
-            var u = "\"" + webPage + "\"";            
+            var u = "\"" + webPage + "\"";
             int tagLenCntr = 0;
 
             foreach (var item in entities)
@@ -144,22 +148,14 @@ namespace chanCopy
 
             }
 
-            var t = message + "<a href=" + u + ">&#8288;</a>";            
+            var t = message + "<a href=" + u + ">&#8288;</a>";
 
             Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
-            chatId: channelName,            
-            text: t,
-            //entities: new Telegram.Bot.Types.MessageEntity[]
-            //{
-            //    new Telegram.Bot.Types.MessageEntity()
-            //    {
-            //        Type = MessageEntityType.Bold,
-            //        Offset = 2,
-            //        Length = 10
-            //    }
-            //},
-            replyMarkup: inlineKeyboard,            
-            parseMode: ParseMode.Html,            
+            //chatId: channelName,
+            chatId: channelName,
+            text: t,           
+            replyMarkup: inlineKeyboard,
+            parseMode: ParseMode.Html,
             cancellationToken: cts);
         }
         #endregion
@@ -169,29 +165,18 @@ namespace chanCopy
     {
         static string Config(string what)
         {
-            switch (what)
-            {
-                case "api_id": return "13180345";
-                case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
-                case "phone_number": return "+79256186936";
-                case "verification_code": return "38615"; /*Console.Write("Code: "); return Console.ReadLine();*/
-                case "first_name": return "Alexey";      // if sign-up is required
-                //case "last_name": return "Doe";        // if sign-up is required
-                //case "password": return "secret!";     // if user has enabled 2FA
-                default: return null;                  // let WTelegramClient decide the default config
-            }
-
             //switch (what)
             //{
-            //    case "api_id": return "15092071";
-            //    case "api_hash": return "49cb5f96f44c30729ae7caeb93dea54d";
-            //    case "phone_number": return "+79267481530";
-            //    case "verification_code": return "79559"; /*Console.Write("Code: "); return Console.ReadLine();*/
-            //    case "first_name": return "dnklknvl";      // if sign-up is required
-            //    case "last_name": return "";        // if sign-up is required
-            //    case "password": return "secret!";     // if user has enabled 2FA
+            //    case "api_id": return "13180345";
+            //    case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
+            //    case "phone_number": return "+79256186936";
+            //    case "verification_code": return "38615"; /*Console.Write("Code: "); return Console.ReadLine();*/
+            //    case "first_name": return "Alexey";      // if sign-up is required
+            //    //case "last_name": return "Doe";        // if sign-up is required
+            //    //case "password": return "secret!";     // if user has enabled 2FA
             //    default: return null;                  // let WTelegramClient decide the default config
             //}
+
 
 #if DEBUG
 
@@ -200,12 +185,26 @@ namespace chanCopy
             //    case "api_id": return "10007326";
             //    case "api_hash": return "5dd41a6fe9bf34ee8e7782eaf27e5f6f";
             //    case "phone_number": return "+84568357459";
-            //    case "verification_code": return "78337"; /*Console.Write("Code: "); return Console.ReadLine();*/
-            //    case "first_name": return "John";      // if sign-up is required
-            //    case "last_name": return "Doe";        // if sign-up is required
+            //    case "verification_code": /*return "65420";*/Console.Write("Code: "); return Console.ReadLine();
+            //    case "first_name": return "Stevie";      // if sign-up is required
+            //    case "last_name": return "Voughan";        // if sign-up is required
             //    case "password": return "secret!";     // if user has enabled 2FA
             //    default: return null;                  // let WTelegramClient decide the default config
             //}
+
+            //Боевой, анонимный юзер
+            switch (what)
+            {
+                case "api_id": return "16256446";
+                case "api_hash": return "40c83143fb936994b2fcfd30b6c4d236";
+                case "phone_number": return "+84568357437";
+                case "verification_code": return "13805";//Console.Write("Code: "); return Console.ReadLine();
+                case "first_name": return "Stevie";      // if sign-up is required
+                case "last_name": return "Voughan";        // if sign-up is required
+                case "password": return "secret!";     // if user has enabled 2FA
+                default: return null;                  // let WTelegramClient decide the default config
+            }
+
 #else
 #endif
 
@@ -220,9 +219,25 @@ namespace chanCopy
         System.Timers.Timer mediaTimer = new System.Timers.Timer();
 
 #if DEBUG
-        //test output channel parameters
-        long outputChannelID = 1597383421;
-        string outputChannelName = "@mytestlalalalal";
+
+        //Тестовый вход
+        //long inputChannelID = 1558709247;
+
+        //Боевой вход
+        long inputChannelID = 1165730518;
+
+
+        //Тестовые
+        //long outputChannelID = 1787870962;
+        //string outputChannelName = "@mytestlalalalal";
+        //string outputChannelName = "-1001787870962";
+
+
+        //Боевые
+        long outputChannelID = 1604783623;
+        //string outputChannelName = "??DISPARA TUS INGRESOS??";
+        string outputChannelName = "-1001604783623";
+
         string outputTargetTgLink = "@daavid_gzlez";
         string outputTelegramLink = "@Daavid_Gonzalez";
         string outputButtonButtonUrl = "http://t.me/Daavid_Gonzalez";
@@ -239,7 +254,7 @@ namespace chanCopy
 
         public async void start()
         {
-            Console.WriteLine("chanCopy 0.2");
+            Console.WriteLine("chanCopy 0.3");
 
             try
             {
@@ -271,9 +286,15 @@ namespace chanCopy
 
         private void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
         {
-            var target = chats.chats[outputChannelID];
-            client.Messages_SendMultiMedia(target, mediaList.ToArray(), false, false, false, false, null, null, null);
-            mediaList.Clear();
+            try
+            {
+                var target = chats.chats[outputChannelID];
+                client.Messages_SendMultiMedia(target, mediaList.ToArray(), false, false, false, false, null, null, null);
+                mediaList.Clear();
+            } catch (Exception ex)
+            {
+                Console.WriteLine(">>" + ex.Message);
+            }
         }
 
         private void Client_Update(TL.IObject arg)
@@ -285,7 +306,13 @@ namespace chanCopy
                 switch (update)
                 {
                     case UpdateNewMessage unm:
-                        ProcessMessage(unm.message);                        
+                        try
+                        {
+                            ProcessMessage(unm.message);
+                        } catch (Exception ex)
+                        {
+                            Console.WriteLine(">" + ex.Message);
+                        }
                         break;               
                 }
         }
@@ -315,9 +342,8 @@ namespace chanCopy
                     if (m.Peer.ID.Equals(outputChannelID))
                         return;
 
-                    if (!m.Peer.ID.Equals(1443613753))
+                    if (!m.Peer.ID.Equals(inputChannelID))
                         return;
-                    
 
                     var target = chats.chats[outputChannelID];
 
@@ -379,7 +405,6 @@ namespace chanCopy
                         var wp = mmw.webpage;
                         var url = ((WebPage)wp).url;
 
-                        string ns = m.message.Replace("@daavid_gzlez", "@ceoxtime");
                         ReplyMarkup markUp = m.reply_markup;
 
                         if (markUp != null)
