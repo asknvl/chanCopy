@@ -20,8 +20,7 @@ namespace chanCopy
         {
 
             ChannelDuplicate ch = new ChannelDuplicate();
-            ch.start();
-            Console.ReadLine();
+            Task.Run(async () => { await ch.start(); }).Wait();            
         }
     }
 
@@ -29,10 +28,11 @@ namespace chanCopy
     {
         #region const
         //мой тестовый
-        //const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
+        const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
 
-        //боевой
-        const string Token = "5597667104:AAGjH9xOyAzTPOLBY98_D88XZaMkOMKGCNg";
+        //боевой 1
+        //const string Token = "5597667104:AAGjH9xOyAzTPOLBY98_D88XZaMkOMKGCNg";
+
         #endregion
 
         #region vars
@@ -56,6 +56,7 @@ namespace chanCopy
                 AllowedUpdates = new UpdateType[] { UpdateType.Message }
             };
             botClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync, receiverOptions, new CancellationToken());
+
         }
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Telegram.Bot.Types.Update update, CancellationToken cancellationToken)
@@ -165,17 +166,17 @@ namespace chanCopy
     {
         static string Config(string what)
         {
-            //switch (what)
-            //{
-            //    case "api_id": return "13180345";
-            //    case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
-            //    case "phone_number": return "+79256186936";
-            //    case "verification_code": return "38615"; /*Console.Write("Code: "); return Console.ReadLine();*/
-            //    case "first_name": return "Alexey";      // if sign-up is required
-            //    //case "last_name": return "Doe";        // if sign-up is required
-            //    //case "password": return "secret!";     // if user has enabled 2FA
-            //    default: return null;                  // let WTelegramClient decide the default config
-            //}
+            switch (what)
+            {
+                case "api_id": return "13180345";
+                case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
+                case "phone_number": return "+79256186936";
+                case "verification_code": Console.Write("Code: "); return Console.ReadLine();
+                case "first_name": return "Alexey";      // if sign-up is required
+                //case "last_name": return "Doe";        // if sign-up is required
+                //case "password": return "secret!";     // if user has enabled 2FA
+                default: return null;                  // let WTelegramClient decide the default config
+            }
 
 
 #if DEBUG
@@ -192,18 +193,18 @@ namespace chanCopy
             //    default: return null;                  // let WTelegramClient decide the default config
             //}
 
-            //Боевой, анонимный юзер
-            switch (what)
-            {
-                case "api_id": return "16256446";
-                case "api_hash": return "40c83143fb936994b2fcfd30b6c4d236";
-                case "phone_number": return "+84568357437";
-                case "verification_code": return "13805";//Console.Write("Code: "); return Console.ReadLine();
-                case "first_name": return "Stevie";      // if sign-up is required
-                case "last_name": return "Voughan";        // if sign-up is required
-                case "password": return "secret!";     // if user has enabled 2FA
-                default: return null;                  // let WTelegramClient decide the default config
-            }
+            //Боевой, анонимный юзер 1
+            //switch (what)
+            //{
+            //    case "api_id": return "16256446";
+            //    case "api_hash": return "40c83143fb936994b2fcfd30b6c4d236";
+            //    case "phone_number": return "+84568357437";
+            //    case "verification_code": return "13805";//Console.Write("Code: "); return Console.ReadLine();
+            //    case "first_name": return "Stevie";      // if sign-up is required
+            //    case "last_name": return "Voughan";        // if sign-up is required
+            //    case "password": return "secret!";     // if user has enabled 2FA
+            //    default: return null;                  // let WTelegramClient decide the default config
+            //}
 
 #else
 #endif
@@ -221,26 +222,28 @@ namespace chanCopy
 #if DEBUG
 
         //Тестовый вход
-        //long inputChannelID = 1558709247;
+        long inputChannelID = 1558709247;
 
         //Боевой вход
-        long inputChannelID = 1165730518;
+        //long inputChannelID = 1165730518;
 
 
         //Тестовые
-        //long outputChannelID = 1787870962;
+        long outputChannelID = 1611772520;
         //string outputChannelName = "@mytestlalalalal";
-        //string outputChannelName = "-1001787870962";
+        string outputChannelName = "-1001611772520";
 
 
-        //Боевые
-        long outputChannelID = 1604783623;
+        //Боевые 1
+        //long outputChannelID = 1604783623;
         //string outputChannelName = "??DISPARA TUS INGRESOS??";
-        string outputChannelName = "-1001604783623";
+        //string outputChannelName = "-1001604783623";
 
+        //Боевые 1
         string outputTargetTgLink = "@daavid_gzlez";
         string outputTelegramLink = "@Daavid_Gonzalez";
         string outputButtonButtonUrl = "http://t.me/Daavid_Gonzalez";
+
 #else
         //test output channel parameters
         long outputChannelID = 1597383421;
@@ -252,9 +255,9 @@ namespace chanCopy
 
         Bot bot;
 
-        public async void start()
+        public async Task start()
         {
-            Console.WriteLine("chanCopy 0.3");
+            Console.WriteLine("chanCopy 0.2 -> клон 2");
 
             try
             {
@@ -282,6 +285,8 @@ namespace chanCopy
             {
                 Console.WriteLine(ex.ToString());
             }
+
+            Console.ReadKey();
         }
 
         private void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
