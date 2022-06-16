@@ -1,0 +1,13 @@
+{
+  "bot_token": "",
+  "api_id": "",
+  "api_hash": "",
+  "phone_number": "",
+  "verification_code": "",
+  "first_name": "",
+  "last_name": "",
+  "inputChannelName": "",
+  "inputTelegramLink": "",
+  "outputChannelName": "",
+  "outputTelegramLink": ""
+}

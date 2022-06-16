@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj": {}
+    "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj": {}
   },
   "projects": {
-    "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj": {
+    "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
+        "projectUniqueName": "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
         "projectName": "chanCopy",
-        "projectPath": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
+        "projectPath": "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
         "packagesPath": "C:\\Users\\Никита\\.nuget\\packages\\",
-        "outputPath": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\obj\\",
+        "outputPath": "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Никита\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -40,6 +40,10 @@
         "net6.0": {
           "targetAlias": "net6.0",
           "dependencies": {
+            "Newtonsoft.Json": {
+              "target": "Package",
+              "version": "[13.0.1, )"
+            },
             "WTelegramClient": {
               "target": "Package",
               "version": "[2.4.1, )"
