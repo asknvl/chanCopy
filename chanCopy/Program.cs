@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
@@ -19,8 +20,123 @@ namespace chanCopy
         static void Main(string[] args)
         {
 
-            ChannelDuplicate ch = new ChannelDuplicate();
+            Settings settings = new Settings();
+            try
+            {
+                settings.load();
+
+                if (string.IsNullOrEmpty(settings.bot_token) ||
+                    string.IsNullOrEmpty(settings.api_id) ||
+                    string.IsNullOrEmpty(settings.api_hash) ||
+                    string.IsNullOrEmpty(settings.phone_number) ||
+                    string.IsNullOrEmpty(settings.first_name) ||
+                    string.IsNullOrEmpty(settings.inputChannelID) ||
+                    string.IsNullOrEmpty(settings.inputTelegramLink) ||
+                    string.IsNullOrEmpty(settings.outputChannelID) ||
+                    string.IsNullOrEmpty(settings.outputTelegramLink)) throw new Exception();
+
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Error: Settings loading fail");
+                return;
+            }
+
+            ChannelDuplicate ch = new ChannelDuplicate(settings);
             Task.Run(async () => { await ch.start(); }).Wait();            
+        }
+    }
+
+    class Settings
+    {
+        #region vars
+        string path = "settings.json";
+        #endregion
+
+        #region properties
+        public string bot_token { get; set; } = "";
+        public string api_id { get; set; } = "";
+        public string api_hash { get; set; } = "";
+        public string phone_number { get; set; } = "";
+        //public string verification_code { get; set; } = "";
+        public string first_name { get; set; } = "";
+        public string last_name { get; set; } = "";
+
+        string inputchid = "";
+        public string inputChannelID {
+            get => inputchid;
+            set
+            {
+                inputchid = value.Replace("-100", "");
+            }
+        }
+        public string inputTelegramLink { get; set; } = "";
+
+        string outputchid;
+        public string outputChannelID { 
+            get => outputchid;
+            set
+            {
+                outputchid = value.Replace("-100", ""); 
+            }
+        }
+        public string outputTelegramLink { get; set; } = "";
+        #endregion
+
+        #region private
+        public void save()
+        {
+            var json = JsonConvert.SerializeObject(this, Formatting.Indented);
+            try
+            {
+                if (File.Exists(path))
+                    File.Delete(path);
+
+                File.WriteAllText(path, json);
+
+            } catch (Exception ex)
+            {
+                throw new Exception("Не удалось сохранить файл JSON");
+            }
+        }
+        #endregion
+
+        public void load()
+        {
+            if (!File.Exists("settings.json"))
+            {
+                save();
+            }
+
+            string rd = File.ReadAllText(path);
+
+            var p = JsonConvert.DeserializeObject<Settings>(rd);
+            if (p != null)
+            {
+                bot_token = p.bot_token;
+                api_id = p.api_id;
+                api_hash = p.api_hash;
+                phone_number = p.phone_number;
+                first_name = p.first_name;
+                last_name = p.last_name;
+                inputChannelID = p.inputChannelID;
+                inputTelegramLink = p.inputTelegramLink;
+                outputChannelID = p.outputChannelID;   
+                outputTelegramLink = p.outputTelegramLink;
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"Spy USER:\n" +
+                   $"{phone_number}\n" +
+                   $"{first_name}\n" +
+                   $"{last_name}\n" +
+                   $"Input channel:\n" +
+                   $"{inputChannelID}\n" +
+                   $"{inputTelegramLink}\n" +
+                   $"Output channel:\n" +
+                   $"{outputChannelID}\n" +
+                   $"{outputTelegramLink}\n";
         }
     }
 
@@ -28,7 +144,7 @@ namespace chanCopy
     {
         #region const
         //мой тестовый
-        const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
+        //const string Token = "5488924440:AAFZWawuQNbBFBW2Kel_Wk_hrM8ZbTWG7Oo";
 
         //боевой 1
         //const string Token = "5597667104:AAGjH9xOyAzTPOLBY98_D88XZaMkOMKGCNg";
@@ -38,13 +154,16 @@ namespace chanCopy
         #region vars
         ITelegramBotClient botClient;
         CancellationTokenSource cts;
-        string channelName;
+        Settings settings;
+        long outputChannelName;
         #endregion
 
-        public Bot(string cnannelName)
+        public Bot(Settings _settings)
         {
-            botClient = new TelegramBotClient(Token);
-            this.channelName = cnannelName;
+            this.settings = _settings;
+            //long outputChnannelName
+            botClient = new TelegramBotClient(settings.bot_token);
+            outputChannelName =   long.Parse("-100" + settings.outputChannelID);
         }
 
         public void Start()
@@ -77,7 +196,7 @@ namespace chanCopy
         }
 
         #region public      
-        public async void PostMedia(string channelName, string inlineText, string inlineUrl, byte[] mediaBytes, CancellationToken cts)
+        public async void PostMedia(string inlineText, string inlineUrl, byte[] mediaBytes, CancellationToken cts)
         {
             InlineKeyboardMarkup inlineKeyboard = new(new[]
                 {
@@ -88,7 +207,7 @@ namespace chanCopy
                 }
             );
             Telegram.Bot.Types.Message sentMessage = await botClient.SendVideoNoteAsync(
-                chatId: channelName,
+                chatId: outputChannelName,
                 videoNote: new MemoryStream(mediaBytes),
                 replyMarkup: inlineKeyboard,
                 cancellationToken: cts);
@@ -116,7 +235,7 @@ namespace chanCopy
             tagLengtCntr += stopTeg.Length;
         }
 
-        public async void PostWebPage(string channelName, string inlineText, string inlineUrl, string message, string webPage, MessageEntity[] entities, CancellationToken cts)
+        public async void PostWebPage(string inlineText, string inlineUrl, string message, string webPage, MessageEntity[] entities, CancellationToken cts)
         {
             InlineKeyboardMarkup inlineKeyboard = new(new[]
                 {
@@ -153,7 +272,7 @@ namespace chanCopy
 
             Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
             //chatId: channelName,
-            chatId: channelName,
+            chatId: outputChannelName,
             text: t,           
             replyMarkup: inlineKeyboard,
             parseMode: ParseMode.Html,
@@ -164,17 +283,17 @@ namespace chanCopy
 
     class ChannelDuplicate
     {
-        static string Config(string what)
+        string Config(string what)
         {
             switch (what)
             {
-                case "api_id": return "13180345";
-                case "api_hash": return "df78e4859fb0cbd03dc5cf83d5d0c0cb";
-                case "phone_number": return "+79256186936";
+                case "api_id": return settings.api_id;
+                case "api_hash": return settings.api_hash;
+                case "phone_number": return settings.phone_number;
                 case "verification_code": Console.Write("Code: "); return Console.ReadLine();
-                case "first_name": return "Alexey";      // if sign-up is required
-                //case "last_name": return "Doe";        // if sign-up is required
-                //case "password": return "secret!";     // if user has enabled 2FA
+                case "first_name": return settings.first_name;// if sign-up is required
+                case "last_name": return settings.last_name;        // if sign-up is required
+                case "password": return "#QqAa123456";     // if user has enabled 2FA
                 default: return null;                  // let WTelegramClient decide the default config
             }
 
@@ -211,38 +330,29 @@ namespace chanCopy
 
         }
 
-        User My;
+        Settings settings;
         readonly Dictionary<long, User> Users = new();
         readonly Dictionary<long, ChatBase> Chats = new();
         TL.Messages_Chats chats;
-        WTelegram.Client client;
-        TL.Messages_Dialogs dialogs;
+        WTelegram.Client client;        
         System.Timers.Timer mediaTimer = new System.Timers.Timer();
 
 #if DEBUG
 
-        //Тестовый вход
-        long inputChannelID = 1558709247;
-
-        //Боевой вход
-        //long inputChannelID = 1165730518;
-
-
-        //Тестовые
-        long outputChannelID = 1611772520;
-        //string outputChannelName = "@mytestlalalalal";
-        string outputChannelName = "-1001611772520";
+        
+        long inputChannelID;        
+        long outputChannelID;
+        string inputTelegramLink;
+        string outputTelegramLink;
+        string outputButtonButtonUrl;
 
 
         //Боевые 1
+        //long inputChannelID = 1165730518;
         //long outputChannelID = 1604783623;
         //string outputChannelName = "??DISPARA TUS INGRESOS??";
         //string outputChannelName = "-1001604783623";
 
-        //Боевые 1
-        string outputTargetTgLink = "@daavid_gzlez";
-        string outputTelegramLink = "@Daavid_Gonzalez";
-        string outputButtonButtonUrl = "http://t.me/Daavid_Gonzalez";
 
 #else
         //test output channel parameters
@@ -255,6 +365,16 @@ namespace chanCopy
 
         Bot bot;
 
+        public ChannelDuplicate(Settings settings)
+        {
+            this.settings = settings;
+            inputChannelID = long.Parse(settings.inputChannelID);
+            outputChannelID = long.Parse(settings.outputChannelID);
+            inputTelegramLink = settings.inputTelegramLink;
+            outputTelegramLink = settings.outputTelegramLink;
+            outputButtonButtonUrl = $"http://t.me/{settings.outputTelegramLink.Replace("@", "")}";
+        }
+
         public async Task start()
         {
             Console.WriteLine("chanCopy 0.2 -> клон 2");
@@ -262,8 +382,7 @@ namespace chanCopy
             try
             {
                 client = new WTelegram.Client(Config);
-                var user = await client.LoginUserIfNeeded();
-                dialogs = await client.Messages_GetAllDialogs();
+                var user = await client.LoginUserIfNeeded();                
                 chats = await client.Messages_GetAllChats();
                 
                 foreach (var item in chats.chats)
@@ -277,7 +396,7 @@ namespace chanCopy
                 mediaTimer.AutoReset = false;
                 mediaTimer.Elapsed += MediaTimer_Elapsed;
 
-                bot = new Bot(outputChannelName);
+                bot = new Bot(settings);
                 bot.Start();
 
 
@@ -331,9 +450,9 @@ namespace chanCopy
         /// <param name="login_to_remove">@toremove</param>
         /// <param name="login_to_insert">@toinsert</param>
         /// <returns></returns>
-        private string updateMessage(string input, string login_to_remove, string login_to_insert)
-        {            
-            return input.Replace(login_to_remove, login_to_insert);
+        private string updateMessage(string input)
+        {   
+            return input.Replace(settings.inputTelegramLink, settings.outputTelegramLink);
         }
 
         private async void ProcessMessage(MessageBase messageBase, bool edit = false)
@@ -385,11 +504,11 @@ namespace chanCopy
                                     }
                                 }
                                 if (inlineUrl != "" && inlineText != "")
-                                    bot.PostMedia(outputChannelName, inlineText, inlineUrl, mediaBytes, new CancellationToken());
+                                    bot.PostMedia(inlineText, inlineUrl, mediaBytes, new CancellationToken());
                             }
                             
                         } else
-                            await client.SendMessageAsync(target, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), doc, 0, m.entities);
+                            await client.SendMessageAsync(target, updateMessage(m.message), doc, 0, m.entities);
                         return;
                     }
 
@@ -432,9 +551,9 @@ namespace chanCopy
                                 }
                             }
                             if (inlineUrl != "" && inlineText != "") 
-                                bot.PostWebPage(outputChannelName, inlineText, inlineUrl, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), url, m.entities, new CancellationToken());
+                                bot.PostWebPage(inlineText, inlineUrl, updateMessage(m.message), url, m.entities, new CancellationToken());
                         } else                      
-                            await client.SendMessageAsync(target, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), null, 0, m.entities, default, true);                         
+                            await client.SendMessageAsync(target, updateMessage(m.message), null, 0, m.entities, default, true);                         
                         return;
                     }
 
@@ -446,7 +565,7 @@ namespace chanCopy
 
                         InputSingleMedia sm = new InputSingleMedia();
                         sm.media = doc;
-                        sm.message = updateMessage(m.message, outputTargetTgLink, outputTelegramLink);                        
+                        sm.message = updateMessage(m.message);                        
                         sm.entities = m.entities;
                         sm.random_id = r.Next();
                         sm.flags = InputSingleMedia.Flags.has_entities;
@@ -458,7 +577,7 @@ namespace chanCopy
                         return;
                     }
 
-                    await client.SendMessageAsync(target, updateMessage(m.message, outputTargetTgLink, outputTelegramLink), null, 0, m.entities);                   
+                    await client.SendMessageAsync(target, updateMessage(m.message), null, 0, m.entities);                   
 
                     break;
                 case MessageService ms: Console.WriteLine($"{Peer(ms.from_id)} in {Peer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
