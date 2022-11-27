@@ -1,7 +1,18 @@
 {
   "version": 3,
   "targets": {
-    "net6.0": {
+    "net5.0": {
+      "WTelegramClient/2.4.1": {
+        "type": "package",
+        "compile": {
+          "lib/net5.0/WTelegramClient.dll": {}
+        },
+        "runtime": {
+          "lib/net5.0/WTelegramClient.dll": {}
+        }
+      }
+    },
+    "net5.0/win10-x64": {
       "WTelegramClient/2.4.1": {
         "type": "package",
         "compile": {
@@ -33,36 +44,34 @@
     }
   },
   "projectFileDependencyGroups": {
-    "net6.0": [
+    "net5.0": [
       "WTelegramClient >= 2.4.1"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Никита\\.nuget\\packages\\": {}
+    "/Users/alexeykonovalov/.nuget/packages/": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
+      "projectUniqueName": "/Users/alexeykonovalov/work/chanCopy/chanCopy/chanCopy.csproj",
       "projectName": "chanCopy",
-      "projectPath": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
-      "packagesPath": "C:\\Users\\Никита\\.nuget\\packages\\",
-      "outputPath": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\obj\\",
+      "projectPath": "/Users/alexeykonovalov/work/chanCopy/chanCopy/chanCopy.csproj",
+      "packagesPath": "/Users/alexeykonovalov/.nuget/packages/",
+      "outputPath": "/Users/alexeykonovalov/work/chanCopy/chanCopy/obj/",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Никита\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "/Users/alexeykonovalov/.nuget/NuGet/NuGet.Config"
       ],
       "originalTargetFrameworks": [
-        "net6.0"
+        "net5.0"
       ],
       "sources": {
-        "https://api.nuget.org/v3/index.json": {},
-        "https://nuget.avaloniaui.net/repository/avalonia-all/index.json": {}
+        "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
-        "net6.0": {
-          "targetAlias": "net6.0",
+        "net5.0": {
+          "targetAlias": "net5.0",
           "projectReferences": {}
         }
       },
@@ -73,8 +82,8 @@
       }
     },
     "frameworks": {
-      "net6.0": {
-        "targetAlias": "net6.0",
+      "net5.0": {
+        "targetAlias": "net5.0",
         "dependencies": {
           "WTelegramClient": {
             "target": "Package",
@@ -91,12 +100,39 @@
         ],
         "assetTargetFallback": true,
         "warn": true,
+        "downloadDependencies": [
+          {
+            "name": "Microsoft.AspNetCore.App.Ref",
+            "version": "[5.0.0, 5.0.0]"
+          },
+          {
+            "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
+            "version": "[5.0.16, 5.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Host.win-x64",
+            "version": "[5.0.16, 5.0.16]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Ref",
+            "version": "[5.0.0, 5.0.0]"
+          },
+          {
+            "name": "Microsoft.NETCore.App.Runtime.win-x64",
+            "version": "[5.0.16, 5.0.16]"
+          }
+        ],
         "frameworkReferences": {
           "Microsoft.NETCore.App": {
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.202/RuntimeIdentifierGraph.json"
+      }
+    },
+    "runtimes": {
+      "win10-x64": {
+        "#import": []
       }
     }
   }

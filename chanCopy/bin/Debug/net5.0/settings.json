@@ -1,0 +1,12 @@
+{
+  "bot_token": "5670690683:AAHxCfqo0N-S64tyrNkTKwlz-TfHb11R70Q",
+  "api_id": "21662151",
+  "api_hash": "d3efff96322ce24dac3c408419fcb7f6",
+  "phone_number": "+6281326720663",
+  "first_name": "fn",
+  "last_name": "sn",
+  "inputChannelID": "-1001569831268",
+  "inputTelegramLink": "@input",
+  "outputChannelID": "-1001602075511",
+  "outputTelegramLink": "@output"
+}

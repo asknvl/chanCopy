@@ -7,4 +7,4 @@ build_property.InvariantGlobalization =
 build_property.PlatformNeutralAssembly = 
 build_property._SupportedPlatformList = Linux,macOS,Windows
 build_property.RootNamespace = chanCopy
-build_property.ProjectDir = d:\WORK\xtime\Sources\chanCopy\chanCopy\
+build_property.ProjectDir = /Users/alexeykonovalov/work/chanCopy/chanCopy/

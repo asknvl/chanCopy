@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Telegram.Bot;
@@ -140,6 +141,14 @@ namespace chanCopy
         }
     }
 
+    class MediaContent
+    {
+        public byte[] mediaBytes { get; set; }
+        public string message { get; set; }
+        public Telegram.Bot.Types.MessageEntity[] entities { get; set; }
+        public IReplyMarkup markup { get; set; }
+    }
+
     class Bot
     {
         #region const
@@ -156,6 +165,7 @@ namespace chanCopy
         CancellationTokenSource cts;
         Settings settings;
         long outputChannelName;
+        System.Timers.Timer mediaTimer;
         #endregion
 
         public Bot(Settings _settings)
@@ -170,12 +180,36 @@ namespace chanCopy
         {
             cts = new CancellationTokenSource();
 
+            mediaTimer = new System.Timers.Timer();
+            mediaTimer.Interval = 5000;
+            mediaTimer.AutoReset = false;
+            mediaTimer.Elapsed += MediaTimer_Elapsed;
+
             var receiverOptions = new ReceiverOptions
             {
                 AllowedUpdates = new UpdateType[] { UpdateType.Message }
             };
             botClient.StartReceiving(HandleUpdateAsync, HandleErrorAsync, receiverOptions, new CancellationToken());
 
+        }
+
+        private async void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            //var album = new
+            var album = new List<Telegram.Bot.Types.IAlbumInputMedia>();
+            int cntr = 0;
+            foreach (var item in mediaList)
+            {
+                Telegram.Bot.Types.InputMedia media = new Telegram.Bot.Types.InputMedia(new MemoryStream(item.mediaBytes), $"file{cntr++}");
+                Telegram.Bot.Types.InputMediaPhoto imp = new Telegram.Bot.Types.InputMediaPhoto(media);
+                imp.CaptionEntities = item.entities;
+                imp.Caption = item.message;
+                album.Add(imp);
+            }
+
+            mediaList.Clear();
+
+            await botClient.SendMediaGroupAsync(outputChannelName, album);
         }
 
         async Task HandleUpdateAsync(ITelegramBotClient botClient, Telegram.Bot.Types.Update update, CancellationToken cancellationToken)
@@ -196,8 +230,56 @@ namespace chanCopy
         }
 
         #region public      
-        public async void PostMedia(string inlineText, string inlineUrl, byte[] mediaBytes, CancellationToken cts)
+        public async void PostVideo(string inlineText, string inlineUrl, bool isround, string message, byte[] mediaBytes, MessageEntity[] entities, CancellationToken cts)
         {
+            try
+            {
+                InlineKeyboardMarkup inlineKeyboard = null;
+                if (!string.IsNullOrEmpty(inlineText) && !string.IsNullOrEmpty(inlineUrl))
+                {
+                    inlineKeyboard = new(new[]
+                    {
+                    InlineKeyboardButton.WithUrl(
+                        text: inlineText,
+                        url: inlineUrl
+                    )
+                }
+                    );
+                }
+
+                if (isround)
+                {
+                    await botClient.SendVideoNoteAsync(
+                        chatId: outputChannelName,
+                        videoNote: new MemoryStream(mediaBytes),
+                        replyMarkup: inlineKeyboard,
+                        cancellationToken: cts);
+                }
+                else
+                {
+                    await botClient.SendVideoAsync(
+                        chatId: outputChannelName,
+                        video: new MemoryStream(mediaBytes),
+                        caption: message,
+                        captionEntities: convertEntities(entities),
+                        replyMarkup: inlineKeyboard,
+                        cancellationToken: cts);
+                }
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+
+        }
+
+
+        List<MediaContent> mediaList = new();
+        public void PostPhoto(string inlineText, string inlineUrl, string message, byte[] mediaBytes, MessageEntity[] entities, CancellationToken cts)
+        {
+           
+            if (mediaList.Count == 0)
+                mediaTimer.Start();
+
             InlineKeyboardMarkup inlineKeyboard = new(new[]
                 {
                     InlineKeyboardButton.WithUrl(
@@ -206,77 +288,108 @@ namespace chanCopy
                     )
                 }
             );
-            Telegram.Bot.Types.Message sentMessage = await botClient.SendVideoNoteAsync(
-                chatId: outputChannelName,
-                videoNote: new MemoryStream(mediaBytes),
-                replyMarkup: inlineKeyboard,
-                cancellationToken: cts);
 
+            mediaList.Add(new MediaContent() {
+                mediaBytes = mediaBytes,
+                message = message,
+                entities = (entities != null) ? convertEntities(entities).ToArray() : null,
+                markup = inlineKeyboard
+            });
+
+         
+
+            //await botClient.SendPhotoAsync(outputChannelName, new MemoryStream(mediaBytes));
         }
 
-
-        void insertTag(string tag, int offset, int length, ref string s, ref int tagLengtCntr)
+        List<Telegram.Bot.Types.MessageEntity> convertEntities(MessageEntity[] entities)
         {
-            string startTeg = $"<{tag}>";
-            s = s.Insert(offset + tagLengtCntr, startTeg);
-            tagLengtCntr += startTeg.Length;
-            string stopTeg = $"</{tag}>";
-            s = s.Insert(offset + length + tagLengtCntr, stopTeg);
-            tagLengtCntr += stopTeg.Length;
-        }
+            List<Telegram.Bot.Types.MessageEntity> _entities = null;
 
-        void insertTagUrl(int offset, int length, ref string s, ref int tagLengtCntr, string url)
-        {            
-            string startTeg = $"<a href=\"{url}\">";
-            s = s.Insert(offset + tagLengtCntr, startTeg);            
-            tagLengtCntr += startTeg.Length;
-            string stopTeg = $"</a>";
-            s = s.Insert(offset + length + tagLengtCntr, stopTeg);
-            tagLengtCntr += stopTeg.Length;
+            if (entities != null) {
+                _entities = new List<Telegram.Bot.Types.MessageEntity>();
+                foreach (var item in entities)
+                {
+
+                    MessageEntityType type = MessageEntityType.Mention;
+                    string? url = null;
+
+                    switch (item)
+                    {
+                        case TL.MessageEntityBold:
+                            type = MessageEntityType.Bold;
+                            break;
+                        case TL.MessageEntityItalic:
+                            type = MessageEntityType.Italic;
+                            break;
+                        case TL.MessageEntityMention:
+                            type = MessageEntityType.Mention;
+                            break;
+                        case TL.MessageEntityTextUrl:
+                            type = MessageEntityType.TextLink;
+                            url = ((MessageEntityTextUrl)item).url;
+                            break;
+                        case MessageEntityUnderline:
+                            type = MessageEntityType.Underline;
+                            break;
+                        case MessageEntityUrl:
+                            type = MessageEntityType.Url;
+
+                            break;
+                        case MessageEntityCode:
+                            type = MessageEntityType.Code;
+                            break;
+                    }
+
+                    _entities.Add(new Telegram.Bot.Types.MessageEntity()
+                    {
+                        Type = type,
+                        Offset = item.offset,
+                        Length = item.length,
+                        Url = url
+
+                    });
+                }
+            }
+
+            return _entities;
         }
 
         public async void PostWebPage(string inlineText, string inlineUrl, string message, string webPage, MessageEntity[] entities, CancellationToken cts)
         {
-            InlineKeyboardMarkup inlineKeyboard = new(new[]
-                {
+            try
+            {
+                InlineKeyboardMarkup inlineKeyboard = new(new[]
+                    {
                     InlineKeyboardButton.WithUrl(
                         text: inlineText,
                         url: inlineUrl
                     )
                 }
-            );
+                );
 
-            var u = "\"" + webPage + "\"";
-            int tagLenCntr = 0;
+                Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
+                //chatId: channelName,
+                chatId: outputChannelName,
+                text: message,
+                replyMarkup: inlineKeyboard,
+                entities: convertEntities(entities),
+                cancellationToken: cts);
 
-            foreach (var item in entities)
+            } catch (Exception ex)
             {
-                //if (item is MessageEntityTextUrl)
-                //{
-                //    insertTagUrl(item.offset, item.length, ref message, ref tagLenCntr, ((MessageEntityTextUrl)item).url);
-                //}
-
-                if (item is MessageEntityItalic)
-                {
-                    insertTag("i", item.offset, item.length, ref message, ref tagLenCntr);
-                }
-                if (item is MessageEntityBold)
-                {
-                    insertTag("b", item.offset, item.length, ref message, ref tagLenCntr);
-                }
-
-
+                Console.WriteLine(ex.Message);
             }
+        }
 
-            var t = message + "<a href=" + u + ">&#8288;</a>";
-
-            Telegram.Bot.Types.Message sentMessage = await botClient.SendTextMessageAsync(
-            //chatId: channelName,
-            chatId: outputChannelName,
-            text: t,           
-            replyMarkup: inlineKeyboard,
-            parseMode: ParseMode.Html,
-            cancellationToken: cts);
+        public async Task PostVoice(byte[] mediaBytes, int duration)
+        {
+            try
+            {
+                await botClient.SendVoiceAsync(outputChannelName, new MemoryStream(mediaBytes));
+            } catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
         #endregion
     }
@@ -296,38 +409,6 @@ namespace chanCopy
                 case "password": return "#QqAa123456";     // if user has enabled 2FA
                 default: return null;                  // let WTelegramClient decide the default config
             }
-
-
-#if DEBUG
-
-            //switch (what)
-            //{
-            //    case "api_id": return "10007326";
-            //    case "api_hash": return "5dd41a6fe9bf34ee8e7782eaf27e5f6f";
-            //    case "phone_number": return "+84568357459";
-            //    case "verification_code": /*return "65420";*/Console.Write("Code: "); return Console.ReadLine();
-            //    case "first_name": return "Stevie";      // if sign-up is required
-            //    case "last_name": return "Voughan";        // if sign-up is required
-            //    case "password": return "secret!";     // if user has enabled 2FA
-            //    default: return null;                  // let WTelegramClient decide the default config
-            //}
-
-            //Боевой, анонимный юзер 1
-            //switch (what)
-            //{
-            //    case "api_id": return "16256446";
-            //    case "api_hash": return "40c83143fb936994b2fcfd30b6c4d236";
-            //    case "phone_number": return "+84568357437";
-            //    case "verification_code": return "13805";//Console.Write("Code: "); return Console.ReadLine();
-            //    case "first_name": return "Stevie";      // if sign-up is required
-            //    case "last_name": return "Voughan";        // if sign-up is required
-            //    case "password": return "secret!";     // if user has enabled 2FA
-            //    default: return null;                  // let WTelegramClient decide the default config
-            //}
-
-#else
-#endif
-
         }
 
         Settings settings;
@@ -335,33 +416,12 @@ namespace chanCopy
         readonly Dictionary<long, ChatBase> Chats = new();
         TL.Messages_Chats chats;
         WTelegram.Client client;        
-        System.Timers.Timer mediaTimer = new System.Timers.Timer();
-
-#if DEBUG
-
-        
+       
         long inputChannelID;        
         long outputChannelID;
         string inputTelegramLink;
         string outputTelegramLink;
         string outputButtonButtonUrl;
-
-
-        //Боевые 1
-        //long inputChannelID = 1165730518;
-        //long outputChannelID = 1604783623;
-        //string outputChannelName = "??DISPARA TUS INGRESOS??";
-        //string outputChannelName = "-1001604783623";
-
-
-#else
-        //test output channel parameters
-        long outputChannelID = 1597383421;
-        string outputChannelName = "@mytestlalalalal";
-        string outputTargetTgLink = "@daavid_gzlez";
-        string outoutTelegramLink = "@ceoxtime";
-        string outputButtonButtonUrl = "http://t.me/ceoxtime";
-#endif
 
         Bot bot;
 
@@ -377,7 +437,7 @@ namespace chanCopy
 
         public async Task start()
         {
-            Console.WriteLine("chanCopy 0.2 -> клон 2");
+            Console.WriteLine("channelCpy 0.0");
 
             try
             {
@@ -392,9 +452,7 @@ namespace chanCopy
 
                 client.Update += Client_Update;
 
-                mediaTimer.Interval = 5000;
-                mediaTimer.AutoReset = false;
-                mediaTimer.Elapsed += MediaTimer_Elapsed;
+               
 
                 bot = new Bot(settings);
                 bot.Start();
@@ -408,18 +466,18 @@ namespace chanCopy
             Console.ReadKey();
         }
 
-        private void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
-        {
-            try
-            {
-                var target = chats.chats[outputChannelID];
-                client.Messages_SendMultiMedia(target, mediaList.ToArray(), false, false, false, false, null, null, null);
-                mediaList.Clear();
-            } catch (Exception ex)
-            {
-                Console.WriteLine(">>" + ex.Message);
-            }
-        }
+        //private void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        //{
+        //    try
+        //    {
+        //        var target = chats.chats[outputChannelID];
+        //        client.Messages_SendMultiMedia(target, mediaList.ToArray(), false, false, false, false, null, null, null);
+        //        mediaList.Clear();
+        //    } catch (Exception ex)
+        //    {
+        //        Console.WriteLine(">>" + ex.Message);
+        //    }
+        //}
 
         private void Client_Update(TL.IObject arg)
         {
@@ -451,8 +509,8 @@ namespace chanCopy
         /// <param name="login_to_insert">@toinsert</param>
         /// <returns></returns>
         private string updateMessage(string input)
-        {   
-            return input.Replace(settings.inputTelegramLink, settings.outputTelegramLink);
+        {
+            return input;
         }
 
         private async void ProcessMessage(MessageBase messageBase, bool edit = false)
@@ -466,29 +524,33 @@ namespace chanCopy
                     if (m.Peer.ID.Equals(outputChannelID))
                         return;
 
-                    if (!m.Peer.ID.Equals(inputChannelID))
-                        return;
+                    //if (!m.Peer.ID.Equals(inputChannelID) && !m.Peer.ID.Equals(inputChannelID))
+                    //    return;
 
                     var target = chats.chats[outputChannelID];
 
                     Random r = new Random();
 
-                    MessageMedia mm = m.media;                    
+                    MessageMedia mm = m.media;
+
+                   
+
                     if (mm is MessageMediaDocument { document: Document document })
                     {
-                        var mmd = (MessageMediaDocument)mm;
-                        var doc = mmd.document;
 
-                        ReplyMarkup markUp = m.reply_markup;
-                        if (markUp != null)
-                        {                            
-                            var fileStream = new MemoryStream();
-                            await client.DownloadFileAsync(document, fileStream);
-                            byte[] mediaBytes = fileStream.ToArray();
+                        var fileStream = new MemoryStream();
+                        await client.DownloadFileAsync(document, fileStream);
+                        byte[] mediaBytes = fileStream.ToArray();
+
+                        if (document.mime_type.Contains("video"))
+                        {
+                            ReplyMarkup markUp = m.reply_markup;
+
+                            string inlineText = "";
+                            string inlineUrl = "";
+
                             if (markUp != null)
                             {
-                                string inlineText = "";
-                                string inlineUrl = "";
                                 var rows = ((ReplyInlineMarkup)markUp).rows;
                                 foreach (KeyboardButtonRow buttonRow in rows)
                                 {
@@ -503,15 +565,33 @@ namespace chanCopy
                                         }
                                     }
                                 }
-                                if (inlineUrl != "" && inlineText != "")
-                                    bot.PostMedia(inlineText, inlineUrl, mediaBytes, new CancellationToken());
                             }
-                            
-                        } else
-                            await client.SendMessageAsync(target, updateMessage(m.message), doc, 0, m.entities);
-                        return;
-                    }
 
+                            var videoAttribute = document.attributes.FirstOrDefault(a => a is DocumentAttributeVideo);
+
+                            bool isRound = false;
+                            if (videoAttribute != null)
+                            {
+                                var flags = ((DocumentAttributeVideo)videoAttribute).flags;
+                                isRound = flags.HasFlag(DocumentAttributeVideo.Flags.round_message);
+                            }
+
+                            bot.PostVideo(inlineText, inlineUrl, isRound, m.message, mediaBytes, m.entities, new CancellationToken());
+
+                            return;
+                        } else
+                            if (document.mime_type.Contains("audio"))
+                        {
+                            var audioAttribute = document.attributes.FirstOrDefault(a => a is DocumentAttributeAudio);
+                            if (audioAttribute != null)
+                            {
+                                int duration = ((DocumentAttributeAudio)audioAttribute).duration;
+                                await bot.PostVoice(mediaBytes, duration);
+                                return;
+                            }
+                        }
+
+                    }
 
                     if (mm is MessageMediaPoll)
                     {
@@ -521,7 +601,6 @@ namespace chanCopy
                         await client.Messages_SendMedia(target, imp, "", r.Next(), false, false, false, false, null, null, m.entities, null, null);
                         return;
                     }
-
 
                     if (mm is MessageMediaWebPage)
                     {
@@ -558,26 +637,24 @@ namespace chanCopy
                     }
 
 
-                    if (mm is MessageMediaPhoto)
+                    if (mm is MessageMediaPhoto { photo: Photo photo })
                     {
+
                         var mmd = (MessageMediaPhoto)mm;
                         var doc = mmd.photo;
 
-                        InputSingleMedia sm = new InputSingleMedia();
-                        sm.media = doc;
-                        sm.message = updateMessage(m.message);                        
-                        sm.entities = m.entities;
-                        sm.random_id = r.Next();
-                        sm.flags = InputSingleMedia.Flags.has_entities;
+                        var fileStream = new MemoryStream();
+                        await client.DownloadFileAsync(photo, fileStream);
+                        byte[] mediaBytes = fileStream.ToArray();
 
-                        if (mediaList.Count == 0)
-                            mediaTimer.Start();
-
-                        mediaList.Add(sm);                       
+                        Console.WriteLine($"photo {mediaBytes.Length} {mediaBytes[1024]}");
+                        bot.PostPhoto(null, null, m.message, mediaBytes, m.entities, new CancellationToken());
+                
                         return;
                     }
 
-                    await client.SendMessageAsync(target, updateMessage(m.message), null, 0, m.entities);                   
+                    if (!string.IsNullOrEmpty(m.message))
+                        await client.SendMessageAsync(target, updateMessage(m.message), null, 0, m.entities);                   
 
                     break;
                 case MessageService ms: Console.WriteLine($"{Peer(ms.from_id)} in {Peer(ms.peer_id)} [{ms.action.GetType().Name[13..]}]"); break;
