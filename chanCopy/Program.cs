@@ -392,7 +392,7 @@ namespace chanCopy
 
                 client.Update += Client_Update;
 
-                mediaTimer.Interval = 2000;
+                mediaTimer.Interval = 5000;
                 mediaTimer.AutoReset = false;
                 mediaTimer.Elapsed += MediaTimer_Elapsed;
 
@@ -573,7 +573,7 @@ namespace chanCopy
                         if (mediaList.Count == 0)
                             mediaTimer.Start();
 
-                        mediaList.Add(sm);
+                        mediaList.Add(sm);                       
                         return;
                     }
 

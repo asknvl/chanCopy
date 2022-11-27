@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Oic56lQ6vlmmw3b9GEEYFOQhG2KQ8stSJZldPHyjRstxlPigX6jHrI0GWhDgRs91ykYv2wM3/RESg/eMhrQ7Xw==",
+  "dgSpecHash": "PUPjBlqDaILDfZXL/qrEjMXDiQ9aVbcxIaVwCAavwYuAp1JSEnLd1LullmXOm7eZROxRxdvi5gaHvfzLpOSnNQ==",
   "success": true,
-  "projectFilePath": "D:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
+  "projectFilePath": "d:\\WORK\\xtime\\Sources\\chanCopy\\chanCopy\\chanCopy.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Никита\\.nuget\\packages\\wtelegramclient\\2.4.1\\wtelegramclient.2.4.1.nupkg.sha512"
   ],
