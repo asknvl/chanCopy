@@ -1,7 +1,7 @@
 ﻿<Properties StartupConfiguration="{D5C1E2A1-9A80-428C-BA69-ABC832EDF2A8}|Default">
-  <MonoDevelop.Ide.Workbench ActiveDocument="chanCopy/Program.cs">
+  <MonoDevelop.Ide.Workbench>
     <Files>
-      <File FileName="chanCopy/Program.cs" Line="656" Column="1" />
+      <File FileName="chanCopy/Program.cs" Line="590" Column="56" />
     </Files>
     <Pads>
       <Pad Id="ProjectPad">

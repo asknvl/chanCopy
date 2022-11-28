@@ -450,8 +450,7 @@ namespace chanCopy
                     Console.WriteLine($"{item.Key} : {item.Value}");
                 }
 
-                client.Update += Client_Update;
-
+                client.OnUpdate += Client_Update;
                
 
                 bot = new Bot(settings);
@@ -464,6 +463,11 @@ namespace chanCopy
             }
 
             Console.ReadKey();
+        }
+
+        private Task Client_OnUpdate(IObject arg)
+        {
+            throw new NotImplementedException();
         }
 
         //private void MediaTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
@@ -479,8 +483,11 @@ namespace chanCopy
         //    }
         //}
 
-        private void Client_Update(TL.IObject arg)
+        private async Task Client_Update(IObject arg)
         {
+
+            await Task.Run(() => { 
+
             if (arg is not UpdatesBase updates) return;
             updates.CollectUsersChats(Users, Chats);
 
@@ -497,6 +504,8 @@ namespace chanCopy
                         }
                         break;               
                 }
+
+            });
         }
 
         List<InputSingleMedia> mediaList = new();
@@ -578,6 +587,22 @@ namespace chanCopy
 
                             bot.PostVideo(inlineText, inlineUrl, isRound, m.message, mediaBytes, m.entities, new CancellationToken());
 
+                            //InputFile f = new InputFile();
+                            
+
+
+                            //InputFileStream s = new InputFileStream(new MemoryStream(mediaBytes), null);
+                         
+                            //await client.SendMessageAsync(target, "caption", new InputMediaUploadedDocument
+                            //{
+                            //    file = f,
+                            //    mime_type = "video/mp4",
+                            //                                attributes = new[] {
+                            //    new DocumentAttributeVideo { duration = 183, w = 1280, h = 720,
+                            //      flags = DocumentAttributeVideo.Flags.supports_streaming }
+                            //  }
+                            //});
+
                             return;
                         } else
                             if (document.mime_type.Contains("audio"))
@@ -598,7 +623,7 @@ namespace chanCopy
                         var mmp = (MessageMediaPoll)mm;
                         InputMediaPoll imp = new InputMediaPoll();
                         imp.poll = mmp.poll;
-                        await client.Messages_SendMedia(target, imp, "", r.Next(), false, false, false, false, null, null, m.entities, null, null);
+                        await client.Messages_SendMedia(target, imp, "", r.Next(), false, false, false, false, false, null, null, null, m.entities, null, null);
                         return;
                     }
 

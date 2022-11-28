@@ -1,15 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "7iqFwFj4qW2u7EhfY0IQRR8OOMN1arjbryrsDa3+32iiKr0SLFoTyjvNKYa56fOkxZNKe7P9gjkjlwct1MCO3Q==",
+  "dgSpecHash": "J11sw5LC5AKKPFA5TwwtnHKgudM/zOiN0FCZ7hAQB8UZIbfM3lRF4X3IciDTbPuIY3sMI3IfOqiSwIvM315xng==",
   "success": true,
   "projectFilePath": "/Users/alexeykonovalov/work/chanCopy/chanCopy/chanCopy.csproj",
   "expectedPackageFiles": [
-    "/Users/alexeykonovalov/.nuget/packages/wtelegramclient/2.4.1/wtelegramclient.2.4.1.nupkg.sha512",
-    "/Users/alexeykonovalov/.nuget/packages/microsoft.netcore.app.ref/5.0.0/microsoft.netcore.app.ref.5.0.0.nupkg.sha512",
-    "/Users/alexeykonovalov/.nuget/packages/microsoft.aspnetcore.app.ref/5.0.0/microsoft.aspnetcore.app.ref.5.0.0.nupkg.sha512",
-    "/Users/alexeykonovalov/.nuget/packages/microsoft.netcore.app.runtime.win-x64/5.0.16/microsoft.netcore.app.runtime.win-x64.5.0.16.nupkg.sha512",
-    "/Users/alexeykonovalov/.nuget/packages/microsoft.aspnetcore.app.runtime.win-x64/5.0.16/microsoft.aspnetcore.app.runtime.win-x64.5.0.16.nupkg.sha512",
-    "/Users/alexeykonovalov/.nuget/packages/microsoft.netcore.app.host.win-x64/5.0.16/microsoft.netcore.app.host.win-x64.5.0.16.nupkg.sha512"
+    "/Users/alexeykonovalov/.nuget/packages/wtelegramclient/3.1.3/wtelegramclient.3.1.3.nupkg.sha512"
   ],
   "logs": []
 }

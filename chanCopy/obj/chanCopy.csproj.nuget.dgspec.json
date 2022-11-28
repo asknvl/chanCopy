@@ -14,13 +14,14 @@
         "outputPath": "/Users/alexeykonovalov/work/chanCopy/chanCopy/obj/",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/Users/alexeykonovalov/.nuget/NuGet/NuGet.Config"
+          "/Users/alexeykonovalov/.config/NuGet/NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net5.0"
         ],
         "sources": {
-          "https://api.nuget.org/v3/index.json": {}
+          "https://api.nuget.org/v3/index.json": {},
+          "https://nuget.avaloniaui.net/repository/avalonia-all/index.json": {}
         },
         "frameworks": {
           "net5.0": {
@@ -40,7 +41,7 @@
           "dependencies": {
             "WTelegramClient": {
               "target": "Package",
-              "version": "[2.4.1, )"
+              "version": "[3.1.3, )"
             }
           },
           "imports": [
@@ -53,39 +54,12 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            },
-            {
-              "name": "Microsoft.AspNetCore.App.Runtime.win-x64",
-              "version": "[5.0.16, 5.0.16]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Host.win-x64",
-              "version": "[5.0.16, 5.0.16]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Ref",
-              "version": "[5.0.0, 5.0.0]"
-            },
-            {
-              "name": "Microsoft.NETCore.App.Runtime.win-x64",
-              "version": "[5.0.16, 5.0.16]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/6.0.202/RuntimeIdentifierGraph.json"
-        }
-      },
-      "runtimes": {
-        "win10-x64": {
-          "#import": []
+          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/x64/sdk/6.0.104/RuntimeIdentifierGraph.json"
         }
       }
     }
