@@ -579,29 +579,34 @@ namespace chanCopy
                             var videoAttribute = document.attributes.FirstOrDefault(a => a is DocumentAttributeVideo);
 
                             bool isRound = false;
+                            int duration = 0;
+                            int w = 0, h = 0;
+
                             if (videoAttribute != null)
                             {
                                 var flags = ((DocumentAttributeVideo)videoAttribute).flags;
                                 isRound = flags.HasFlag(DocumentAttributeVideo.Flags.round_message);
+
+                                duration = ((DocumentAttributeVideo)videoAttribute).duration;
+                                w = ((DocumentAttributeVideo)videoAttribute).w;
+                                h = ((DocumentAttributeVideo)videoAttribute).h;
                             }
 
                             bot.PostVideo(inlineText, inlineUrl, isRound, m.message, mediaBytes, m.entities, new CancellationToken());
 
-                            //InputFile f = new InputFile();
-                            
 
 
-                            //InputFileStream s = new InputFileStream(new MemoryStream(mediaBytes), null);
-                         
-                            //await client.SendMessageAsync(target, "caption", new InputMediaUploadedDocument
+                            //var inputFile = await client.UploadFileAsync(new MemoryStream(mediaBytes), "fn");
+                            //await client.SendMessageAsync(target, m.message, new InputMediaUploadedDocument
                             //{
-                            //    file = f,
+                            //    file = inputFile,
                             //    mime_type = "video/mp4",
-                            //                                attributes = new[] {
-                            //    new DocumentAttributeVideo { duration = 183, w = 1280, h = 720,
+                            //    attributes = new[] {
+                            //    new DocumentAttributeVideo { duration = duration, w = w, h = h,
                             //      flags = DocumentAttributeVideo.Flags.supports_streaming }
                             //  }
                             //});
+
 
                             return;
                         } else
